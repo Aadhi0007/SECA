@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SECA vs GPT Comparison</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-trail" id="cursorTrail"></div>
+
+    <header>
+        <a href="/compare" class="back-btn">&larr; Back to Hub</a>
+        <h1>SECA vs GPT Architecture</h1>
+    
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
+            <svg id="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <svg id="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+</header>
+
+    <div class="container">
+        <div class="card compare-card">
+            <h2>Overview</h2>
+            <p>
+                Generative Pre-trained Transformers (GPT) rely on massive, static architectures trained on monumental
+                datasets using backpropagation.
+                In contrast, <strong>SECA</strong> uses neuroevolution to dynamically build and optimize its own
+                topology, minimizing parameter waste.
+            </p>
+        </div>
+
+        <div class="card compare-card">
+            <h2>Key Differences</h2>
+            <table>
+                <tr>
+                    <th>Feature</th>
+                    <th>GPT-style Models</th>
+                    <th>SECA Engine</th>
+                </tr>
+                <tr>
+                    <td>Architecture</td>
+                    <td>Static, pre-defined Transformer blocks</td>
+                    <td class="highlight">Dynamic, evolved layer structures</td>
+                </tr>
+                <tr>
+                    <td>Scaling Paradigm</td>
+                    <td>Scaling laws (Compute & Data & Parameters)</td>
+                    <td class="highlight">Topology & Weight learning concurrently</td>
+                </tr>
+                <tr>
+                    <td>Parameter Efficiency</td>
+                    <td>Low (Often highly over-parameterized)</td>
+                    <td class="highlight">High (Evolves minimal required size)</td>
+                </tr>
+                <tr>
+                    <td>Training Compute</td>
+                    <td>Massive (Datacenter scale)</td>
+                    <td class="highlight">Adaptive (Can run efficiently on edge nodes)</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="card compare-card">
+            <h2>Parameter Growth (Log Scale Estimate)</h2>
+            <canvas id="gptChart" height="100"></canvas>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <button onclick="location.href='/?auto_run=true&model_type=gpt'" id="generateBtn">Generate GPT Alternative
+                with SECA</button>
+        </div>
+    </div>
+
+    <script>
+        const cursorDot = document.getElementById("cursorDot");
+        const cursorTrail = document.getElementById("cursorTrail");
+        window.addEventListener("mousemove", (e) => {
+            cursorDot.style.left = e.clientX + "px"; cursorDot.style.top = e.clientY + "px";
+        });
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('mouseenter', () => { cursorTrail.style.width = '50px'; cursorTrail.style.height = '50px'; });
+            el.addEventListener('mouseleave', () => { cursorTrail.style.width = '32px'; cursorTrail.style.height = '32px'; });
+        });
+
+        Chart.defaults.color = '#c5c6c7';
+        Chart.defaults.borderColor = 'rgba(255, 193, 7, 0.55)';
+
+        new Chart(document.getElementById("gptChart"), {
+            type: 'bar',
+            data: {
+                labels: ['GPT-2', 'GPT-3', 'GPT-4 (Est)', 'SECA (Typical)'],
+                datasets: [{
+                    label: 'Millions of Parameters',
+                    data: [1500, 175000, 1760000, 15],
+                    backgroundColor: [
+                        'rgba(69, 162, 158, 0.2)',
+                        'rgba(69, 162, 158, 0.4)',
+                        'rgba(69, 162, 158, 0.6)',
+                        'rgba(255, 193, 7, 0.8)'
+                    ],
+                    borderColor: [
+                        '#45a29e', '#45a29e', '#45a29e', '#ffc107'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                scales: {
+                    y: { type: 'logarithmic', title: { display: true, text: 'Parameters (Log Scale)' } }
+                }
+            }
+        });
+    </script>
+
+<script>
+    (function() {
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+    })();
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const themeToggle = document.getElementById('theme-toggle');
+        const iconSun = document.getElementById('theme-icon-sun');
+        const iconMoon = document.getElementById('theme-icon-moon');
+        const root = document.documentElement;
+
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        root.setAttribute('data-theme', currentTheme);
+        updateIcon(currentTheme);
+
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                let theme = root.getAttribute('data-theme');
+                let newTheme = theme === 'light' ? 'dark' : 'light';
+                root.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateIcon(newTheme);
+            });
+        }
+
+        function updateIcon(theme) {
+            if (iconSun && iconMoon) {
+                if (theme === 'dark') {
+                    iconSun.style.display = 'block';
+                    iconMoon.style.display = 'none';
+                } else {
+                    iconSun.style.display = 'none';
+                    iconMoon.style.display = 'block';
+                }
+            }
+        }
+    });
+</script>
+</body>
+
+</html>

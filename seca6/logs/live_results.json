@@ -1,0 +1,140 @@
+{
+    "generation": 5,
+    "individual": 6,
+    "total_individuals": 30,
+    "total_generations": 5,
+    "pop_size": 6,
+    "estimated_remaining_seconds": 0,
+    "results": [
+        {
+            "generation": 0,
+            "accuracy": 0.5526000261306763,
+            "fitness": 0.41607802613067624,
+            "params": 136522,
+            "genome": {
+                "network_type": "cnn",
+                "dense": 64,
+                "dropout": 0.1,
+                "stages": [
+                    {
+                        "filters": 64,
+                        "kernel": 5,
+                        "pool": 2
+                    },
+                    {
+                        "filters": 48,
+                        "kernel": 3,
+                        "pool": 2
+                    },
+                    {
+                        "filters": 64,
+                        "kernel": 5,
+                        "pool": 1
+                    },
+                    {
+                        "filters": 16,
+                        "kernel": 3,
+                        "pool": 2
+                    }
+                ]
+            }
+        },
+        {
+            "generation": 1,
+            "accuracy": 0.492900013923645,
+            "fitness": 0.44401001392364503,
+            "params": 48890,
+            "genome": {
+                "network_type": "cnn",
+                "dense": 32,
+                "dropout": 0.0,
+                "stages": [
+                    {
+                        "filters": 64,
+                        "kernel": 5,
+                        "pool": 2
+                    },
+                    {
+                        "filters": 16,
+                        "kernel": 3,
+                        "pool": 1
+                    },
+                    {
+                        "filters": 16,
+                        "kernel": 3,
+                        "pool": 2
+                    },
+                    {
+                        "filters": 48,
+                        "kernel": 3,
+                        "pool": 2
+                    }
+                ]
+            }
+        },
+        {
+            "generation": 2,
+            "accuracy": 0.5649999976158142,
+            "fitness": 0.4330539976158142,
+            "params": 131946,
+            "genome": {
+                "network_type": "cnn",
+                "dense": 32,
+                "dropout": 0.0,
+                "stages": [
+                    {
+                        "filters": 16,
+                        "kernel": 3,
+                        "pool": 2
+                    }
+                ]
+            }
+        },
+        {
+            "generation": 3,
+            "accuracy": 0.48539999127388,
+            "fitness": 0.41625399127388,
+            "params": 69146,
+            "genome": {
+                "network_type": "cnn",
+                "dense": 64,
+                "dropout": 0.0,
+                "stages": [
+                    {
+                        "filters": 16,
+                        "kernel": 3,
+                        "pool": 2
+                    },
+                    {
+                        "filters": 16,
+                        "kernel": 3,
+                        "pool": 2
+                    }
+                ]
+            }
+        },
+        {
+            "generation": 4,
+            "accuracy": 0.48910000920295715,
+            "fitness": 0.41995400920295717,
+            "params": 69146,
+            "genome": {
+                "network_type": "cnn",
+                "dense": 64,
+                "dropout": 0.0,
+                "stages": [
+                    {
+                        "filters": 16,
+                        "kernel": 3,
+                        "pool": 2
+                    },
+                    {
+                        "filters": 16,
+                        "kernel": 3,
+                        "pool": 2
+                    }
+                ]
+            }
+        }
+    ]
+}

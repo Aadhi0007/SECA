@@ -1,0 +1,84 @@
+# ==========================================
+# SECA Master Configuration
+# ==========================================
+
+project:
+  name: "SECA"
+  full_name: "Self-Evolving Cognitive Architecture"
+  version: "1.0"
+  description: "Framework for evolutionary neural architecture optimization"
+
+# ==========================================
+# Configuration File References
+# ==========================================
+
+configs:
+  dataset_config: "config/dataset_config.yaml"
+  experiment_config: "config/experiment_config.yaml"
+  evolution_config: "config/evolution_config.yaml"
+
+# ==========================================
+# System Settings
+# ==========================================
+
+system:
+  device: "cpu"
+  random_seed: 42
+  reproducibility: true
+
+# ==========================================
+# Dataset Settings
+# ==========================================
+
+dataset:
+  loader: "mnist"
+  cache_dataset: true
+
+# ==========================================
+# Evolution Engine
+# ==========================================
+
+engine:
+  type: "seca_engine"
+  enable_evolution: true
+  enable_learning: true
+  enable_evaluation: true
+
+# ==========================================
+# Cognitive Layer
+# ==========================================
+
+cognition:
+  enable_introspection: true
+  enable_confidence_estimation: true
+  enable_regulation: true
+
+# ==========================================
+# Logging Settings
+# ==========================================
+
+logging:
+  enable_logging: true
+  log_directory: "logs"
+  save_evolution_history: true
+  save_training_logs: true
+
+# ==========================================
+# Visualization Settings
+# ==========================================
+
+visualization:
+  enable_plots: true
+  enable_dashboard: false
+  plot_accuracy: true
+  plot_fitness: true
+  plot_parameters: true
+
+# ==========================================
+# Experiment Execution
+# ==========================================
+
+execution:
+  run_mode: "experiment"
+  auto_save_results: true
+  generate_plots_after_run: true

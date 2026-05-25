@@ -1,0 +1,69 @@
+# =====================================
+# SECA Dataset Configuration
+# =====================================
+
+dataset:
+  name: "MNIST"
+  description: "Handwritten digit classification dataset"
+
+# =====================================
+# Dataset Source
+# =====================================
+
+source:
+  type: "tensorflow_builtin"
+  path: null
+  download: true
+
+# =====================================
+# Input Data Properties
+# =====================================
+
+input:
+  image_height: 28
+  image_width: 28
+  channels: 1
+
+# =====================================
+# Dataset Split
+# =====================================
+
+split:
+  train_size: 60000
+  test_size: 10000
+
+# =====================================
+# Preprocessing
+# =====================================
+
+preprocessing:
+  normalize: true
+  normalization_range: [0, 1]
+  reshape_for_cnn: true
+
+# =====================================
+# Training Labels
+# =====================================
+
+labels:
+  num_classes: 10
+  encoding: "integer"
+
+# =====================================
+# Data Augmentation (Optional)
+# =====================================
+
+augmentation:
+  enabled: false
+  rotation_range: 10
+  width_shift: 0.1
+  height_shift: 0.1
+  zoom_range: 0.1
+
+# =====================================
+# Dataset Loader Settings
+# =====================================
+
+loader:
+  batch_loading: false
+  cache_dataset: true

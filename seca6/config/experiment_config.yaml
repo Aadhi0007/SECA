@@ -1,0 +1,96 @@
+# =========================================
+# SECA Experiment Configuration
+# =========================================
+
+experiment:
+  name: "SECA Neural Architecture Evolution"
+  dataset: "MNIST"
+  description: "Evolutionary neural architecture optimization using SECA"
+
+# =========================================
+# Evolution Parameters
+# =========================================
+
+evolution:
+  population_size: 6
+  generations: 5
+  mutation_rate: 0.3
+  parent_selection: "top_k"
+  crossover: true
+
+# =========================================
+# Neural Network Search Space
+# =========================================
+
+architecture:
+  min_stages: 1
+  max_stages: 5
+
+  filters:
+    - 16
+    - 32
+    - 48
+    - 64
+
+  kernel_sizes:
+    - 3
+    - 5
+
+  pooling:
+    - 1
+    - 2
+
+  dense_units:
+    - 32
+    - 64
+    - 128
+
+  dropout:
+    - 0.0
+    - 0.2
+    - 0.4
+
+# =========================================
+# Training Parameters
+# =========================================
+
+training:
+  epochs: 3
+  batch_size: 64
+  optimizer: "adam"
+  learning_rate: 0.001
+
+# =========================================
+# Fitness Evaluation
+# =========================================
+
+fitness:
+  complexity_penalty_scale: 1000000
+
+# =========================================
+# Cognitive Layer Settings
+# =========================================
+
+cognition:
+  enable_introspection: true
+  enable_confidence_estimation: true
+  early_stop_enabled: false
+
+# =========================================
+# Logging
+# =========================================
+
+logging:
+  save_json_log: true
+  save_csv_log: true
+  log_directory: "logs"
+
+# =========================================
+# Visualization
+# =========================================
+
+visualization:
+  enable_plots: true
+  plot_accuracy: true
+  plot_fitness: true
+  plot_parameters: true

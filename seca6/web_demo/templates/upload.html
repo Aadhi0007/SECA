@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SECA - Upload Custom Dataset</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="flex-body">
+
+    <!-- Custom Cursor HTML -->
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-trail" id="cursorTrail"></div>
+
+    <header class="header-spaced">
+        <h1>Upload Custom Dataset</h1>
+    
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
+            <svg id="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <svg id="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+</header>
+
+    <div class="card upload-card">
+        <h2>Provide Your Data</h2>
+
+        <div class="requirements">
+            <strong>Format Required:</strong> Upload a <code>.npz</code> file created with NumPy.<br><br>
+            It MUST contain the following four arrays exactly:<br>
+            <ul>
+                <li><code>x_train</code> : Training Inputs (e.g. <i>(samples, height, width, channels)</i>)</li>
+                <li><code>y_train</code> : Training Labels (e.g. <i>(samples,)</i>)</li>
+                <li><code>x_test</code> : Validation Inputs</li>
+                <li><code>y_test</code> : Validation Labels</li>
+            </ul>
+        </div>
+
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <div class="upload-box" id="dropArea">
+                <input type="file" name="file" accept=".npz" id="fileInput" required>
+                <div class="upload-icon">📁</div>
+                <div class="upload-text" id="uploadText">Drag and drop <code>.npz</code> file here or <span>Click to
+                        browse</span></div>
+            </div>
+
+            <button type="submit">Upload & Use Dataset</button>
+        </form>
+
+        <a href="/" class="back-link">← Cancel and return to Dashboard</a>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const uploadText = document.getElementById('uploadText');
+
+        fileInput.addEventListener('change', function (e) {
+            if (e.target.files.length > 0) {
+                const fileName = e.target.files[0].name;
+                uploadText.innerHTML = `Selected file: <span style="color:#66fcf1">${fileName}</span>`;
+            } else {
+                uploadText.innerHTML = `Drag and drop <code>.npz</code> file here or <span>Click to browse</span>`;
+            }
+        });
+
+        // --------------------------------------------------------------------------
+        // Custom Cursor Script Logic
+        // --------------------------------------------------------------------------
+        const cursorDot = document.getElementById("cursorDot");
+        const cursorTrail = document.getElementById("cursorTrail");
+
+        let mouseX = 0, mouseY = 0;
+        let trailX = 0, trailY = 0;
+
+        window.addEventListener("mousemove", (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursorDot.style.left = mouseX + "px";
+            cursorDot.style.top = mouseY + "px";
+        });
+
+        function animateCursor() {
+            let distX = mouseX - trailX;
+            let distY = mouseY - trailY;
+            trailX = trailX + (distX * 0.2);
+            trailY = trailY + (distY * 0.2);
+            cursorTrail.style.left = trailX + "px";
+            cursorTrail.style.top = trailY + "px";
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        const interactables = document.querySelectorAll('button, a, input[type=file]');
+        interactables.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursorTrail.style.width = '50px';
+                cursorTrail.style.height = '50px';
+                cursorTrail.style.borderColor = 'rgba(255, 193, 7, 0.8)';
+                cursorTrail.style.background = 'rgba(255, 193, 7, 0.55)';
+                cursorDot.style.transform = 'translate(-50%, -50%) scale(1.5)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursorTrail.style.width = '32px';
+                cursorTrail.style.height = '32px';
+                cursorTrail.style.borderColor = 'rgba(255, 193, 7, 0.7)';
+                cursorTrail.style.background = 'transparent';
+                cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
+            });
+        });
+    </script>
+
+<script>
+    (function() {
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+    })();
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const themeToggle = document.getElementById('theme-toggle');
+        const iconSun = document.getElementById('theme-icon-sun');
+        const iconMoon = document.getElementById('theme-icon-moon');
+        const root = document.documentElement;
+
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        root.setAttribute('data-theme', currentTheme);
+        updateIcon(currentTheme);
+
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                let theme = root.getAttribute('data-theme');
+                let newTheme = theme === 'light' ? 'dark' : 'light';
+                root.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateIcon(newTheme);
+            });
+        }
+
+        function updateIcon(theme) {
+            if (iconSun && iconMoon) {
+                if (theme === 'dark') {
+                    iconSun.style.display = 'block';
+                    iconMoon.style.display = 'none';
+                } else {
+                    iconSun.style.display = 'none';
+                    iconMoon.style.display = 'block';
+                }
+            }
+        }
+    });
+</script>
+</body>
+
+</html>

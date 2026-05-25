@@ -1,0 +1,83 @@
+# =====================================
+# SECA Evolution Configuration
+# =====================================
+
+evolution:
+  algorithm: "genetic_algorithm"
+
+# =====================================
+# Population Settings
+# =====================================
+
+population:
+  size: 6
+  elitism: 1
+  initialize_random: true
+
+# =====================================
+# Generation Settings
+# =====================================
+
+generations:
+  max_generations: 5
+  early_stop: false
+
+# =====================================
+# Selection Strategy
+# =====================================
+
+selection:
+  method: "top_k"
+  parents: 2
+
+# =====================================
+# Crossover Settings
+# =====================================
+
+crossover:
+  enabled: true
+  type: "single_point"
+  probability: 0.8
+
+# =====================================
+# Mutation Settings
+# =====================================
+
+mutation:
+  enabled: true
+  rate: 0.3
+
+  operations:
+    change_filters: true
+    change_kernel: true
+    change_pool: true
+    change_dense: true
+    change_dropout: true
+    add_stage: true
+    remove_stage: true
+
+# =====================================
+# Genome Constraints
+# =====================================
+
+genome:
+  min_stages: 1
+  max_stages: 5
+
+# =====================================
+# Fitness Evaluation
+# =====================================
+
+fitness:
+  objective: "accuracy_efficiency"
+  complexity_penalty: true
+  penalty_scale: 1000000
+
+# =====================================
+# Evolution Monitoring
+# =====================================
+
+monitoring:
+  track_best_individual: true
+  track_population_stats: true
+  save_generation_results: true

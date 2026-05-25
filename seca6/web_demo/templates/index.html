@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SECA Evolution Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+
+<body>
+
+    <header>
+        <h1>SECA Dashboard</h1>
+        <p>Self-Evolving Cognitive Architecture</p>
+
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
+            <svg id="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                style="display:none;">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg id="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </button>
+    </header>
+
+
+    <div class="container">
+
+        <div class="card index-card">
+
+            <h2>Project Overview</h2>
+
+            <p>
+                SECA evolves neural network architectures using evolutionary algorithms
+                combined with gradient learning.
+            </p>
+
+            <div style="margin-bottom: 20px; color: #45a29e; font-size: 1.1em;">
+                <strong>Active Dataset:</strong> {{ active_dataset }}
+            </div>
+
+            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <button onclick="runSECA()" id="runBtn">Run SECA Evolution</button>
+                <button onclick="stopSECA()" id="stopBtn"
+                    style="background: transparent; border: 2px solid #ff4d4d; color: #ff4d4d; display: none;">Stop
+                    Evolution</button>
+                <button onclick="location.href='/select_dataset'"
+                    style="background: transparent; border: 2px solid #ffc107; color: #ffc107;">Change Dataset</button>
+                <button onclick="location.href='/compare'"
+                    style="background: transparent; border: 2px solid #45a29e; color: #45a29e;">Compare LLMs</button>
+                <button onclick="window.open('/download_history', '_blank')"
+                    style="background: transparent; border: 2px solid #1abc9c; color: #1abc9c;">Download History</button>
+            </div>
+
+        </div>
+
+
+        <div class="card index-card">
+
+            <h2>Status</h2>
+            <div id="statusBox">Idle</div>
+
+        </div>
+
+
+        <div class="card index-card">
+
+            <h2>Training Progress</h2>
+
+            <div id="progressDetails"
+                style="margin-bottom: 10px; color: #ffc107; font-weight: bold; display: flex; justify-content: space-between;">
+                <span id="genIndProgress">Waiting for evolution to start...</span>
+                <span id="timeRemaining"></span>
+            </div>
+
+            <div class="progress">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
+
+        </div>
+
+
+        <div class="card index-card">
+
+            <h2>Experiment Statistics</h2>
+
+            <div class="stats">
+
+                <div class="stat-box">
+                    <h3 id="genCount">{{summary.generations}}</h3>
+                    <p>Generations</p>
+                </div>
+
+                <div class="stat-box">
+                    <h3 id="bestAccVal">{{summary.best_accuracy}}</h3>
+                    <p>Best Accuracy</p>
+                </div>
+
+                <div class="stat-box">
+                    <h3 id="bestFitVal">{{summary.best_fitness}}</h3>
+                    <p>Best Fitness</p>
+                </div>
+
+                <div class="stat-box">
+                    <h3 id="minParamVal">{{summary.min_parameters}}</h3>
+                    <p>Min Parameters</p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card index-card">
+
+            <h2>Accuracy Evolution</h2>
+            <canvas id="accuracyChart"></canvas>
+
+        </div>
+
+
+        <div class="card index-card">
+
+            <h2>Fitness Evolution</h2>
+            <canvas id="fitnessChart"></canvas>
+
+        </div>
+
+
+        <div class="card index-card">
+
+            <h2>Model Size Evolution</h2>
+            <canvas id="paramChart"></canvas>
+
+        </div>
+
+
+        <div class="card index-card">
+
+            <h2>Evolution Table</h2>
+
+            <table id="genTable">
+
+                <tr>
+                    <th>Generation</th>
+                    <th>Accuracy</th>
+                    <th>Fitness</th>
+                    <th>Parameters</th>
+                </tr>
+
+            </table>
+
+        </div>
+
+
+        <div class="card index-card">
+
+            <h2>Best Architecture</h2>
+
+            <div id="architectureBox" class="architecture">
+                {{best_model.genome}}
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <footer>
+        <p>SECA</p>
+    </footer>
+
+
+    <script>
+
+        const generations = JSON.parse('{{ generations | tojson | safe }}');
+        const accuracy = JSON.parse('{{ accuracy | tojson | safe }}');
+        const fitness = JSON.parse('{{ fitness | tojson | safe }}');
+        const params = JSON.parse('{{ params | tojson | safe }}');
+
+        // Honeycomb Theme Settings for ChartJs
+        Chart.defaults.color = '#c5c6c7';
+        Chart.defaults.borderColor = 'rgba(255, 193, 7, 0.55)';
+
+        let accuracyChart = new Chart(
+            document.getElementById("accuracyChart"),
+            {
+                type: 'line',
+                data: {
+                    labels: generations, datasets: [{
+                        label: 'Accuracy',
+                        data: accuracy,
+                        borderColor: '#ffc107',
+                        backgroundColor: 'rgba(255, 193, 7, 0.2)',
+                        tension: 0.3,
+                        fill: true,
+                        pointBackgroundColor: '#ff8f00',
+                        pointRadius: 4
+                    }]
+                }
+            });
+
+        let fitnessChart = new Chart(
+            document.getElementById("fitnessChart"),
+            {
+                type: 'line',
+                data: {
+                    labels: generations, datasets: [{
+                        label: 'Fitness',
+                        data: fitness,
+                        borderColor: '#ff8f00',
+                        backgroundColor: 'rgba(255, 143, 0, 0.2)',
+                        tension: 0.3,
+                        fill: true,
+                        pointBackgroundColor: '#ffc107',
+                        pointRadius: 4
+                    }]
+                }
+            });
+
+        let paramChart = new Chart(
+            document.getElementById("paramChart"),
+            {
+                type: 'line',
+                data: {
+                    labels: generations, datasets: [{
+                        label: 'Parameters',
+                        data: params,
+                        borderColor: '#45a29e',
+                        backgroundColor: 'rgba(69, 162, 158, 0.2)',
+                        tension: 0.3,
+                        fill: true,
+                        pointBackgroundColor: '#66fcf1',
+                        pointRadius: 4
+                    }]
+                }
+            });
+
+    </script>
+
+
+    <script>
+
+        let maxGenerations = 5;
+        let pollingInterval = null;
+
+        window.onload = () => {
+            updateDashboard();
+            if (!pollingInterval) {
+                pollingInterval = setInterval(updateDashboard, 2000);
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('auto_run') === 'true') {
+                const modelType = urlParams.get('model_type') || 'cnn';
+                runSECA(modelType);
+                window.history.replaceState(null, '', window.location.pathname);
+            }
+        };
+
+        function runSECA(modelType = 'cnn') {
+
+            document.getElementById("statusBox").innerText = "Running Evolution";
+
+            fetch("/run_seca?model_type=" + modelType);
+
+            if (!pollingInterval) {
+                pollingInterval = setInterval(updateDashboard, 2000);
+            }
+
+        }
+
+        function stopSECA() {
+            document.getElementById("statusBox").innerText = "Stopping...";
+            fetch("/stop_seca");
+        }
+
+        function updateDashboard() {
+
+            fetch("/status")
+                .then(res => res.json())
+                .then(statusData => {
+                    const runBtn = document.getElementById("runBtn");
+                    const stopBtn = document.getElementById("stopBtn");
+                    if (!statusData.running) {
+                        document.getElementById("statusBox").innerText = "Idle";
+                        if (runBtn) runBtn.style.display = "inline-block";
+                        if (stopBtn) stopBtn.style.display = "none";
+                        if (pollingInterval) {
+                            clearInterval(pollingInterval);
+                            pollingInterval = null;
+                        }
+                    } else if (statusData.stopping) {
+                        document.getElementById("statusBox").innerText = "Stopping (waiting for iter to finish)...";
+                        if (runBtn) runBtn.style.display = "none";
+                        if (stopBtn) stopBtn.style.display = "none";
+                    } else {
+                        document.getElementById("statusBox").innerText = "Running Evolution";
+                        if (runBtn) runBtn.style.display = "none";
+                        if (stopBtn) stopBtn.style.display = "inline-block";
+                        if (!pollingInterval) {
+                            pollingInterval = setInterval(updateDashboard, 2000);
+                        }
+                    }
+                });
+
+            fetch("/get_progress")
+                .then(res => res.json())
+                .then(data => {
+
+                    if (!data.results || data.results.length === 0 && data.generation === 0) return;
+
+                    updateCharts(data.results);
+                    updateTable(data.results);
+                    updateProgress(data);
+                    if (data.results.length > 0) {
+                        updateArchitecture(data.results);
+                        updateStats(data.results);
+                    }
+
+                });
+
+        }
+
+        function updateCharts(data) {
+
+            let gens = data.map(x => x.generation);
+            let acc = data.map(x => x.accuracy);
+            let fit = data.map(x => x.fitness);
+            let par = data.map(x => x.params);
+
+            accuracyChart.data.labels = gens;
+            accuracyChart.data.datasets[0].data = acc;
+            accuracyChart.update();
+
+            fitnessChart.data.labels = gens;
+            fitnessChart.data.datasets[0].data = fit;
+            fitnessChart.update();
+
+            paramChart.data.labels = gens;
+            paramChart.data.datasets[0].data = par;
+            paramChart.update();
+
+        }
+
+        function updateStats(data) {
+            let acc = data.map(x => x.accuracy);
+            let fit = data.map(x => x.fitness);
+            let par = data.map(x => x.params);
+
+            document.getElementById("genCount").innerText = data.length;
+            document.getElementById("bestAccVal").innerText = Math.max(...acc).toFixed(4);
+            document.getElementById("bestFitVal").innerText = Math.max(...fit).toFixed(4);
+            document.getElementById("minParamVal").innerText = Math.min(...par);
+        }
+
+        function updateTable(data) {
+
+            let table = document.getElementById("genTable");
+
+            table.innerHTML =
+                "<tr><th>Generation</th><th>Accuracy</th><th>Fitness</th><th>Parameters</th></tr>";
+
+            data.forEach(row => {
+
+                table.innerHTML +=
+                    `<tr>
+<td>${row.generation}</td>
+<td>${row.accuracy}</td>
+<td>${row.fitness}</td>
+<td>${row.params}</td>
+</tr>`;
+
+            });
+
+        }
+
+        function updateProgress(data) {
+
+            let progress = 0;
+            let label = "Waiting for evolution to start...";
+            let timeLabel = "";
+
+            if (data.total_individuals > 0 && data.generation > 0) {
+                let total_gens = data.total_generations || 5;
+                let pop_size = data.pop_size || (data.total_individuals / total_gens);
+
+                let current_total_individuals = ((data.generation - 1) * pop_size) + data.individual;
+                if (data.generation > total_gens) {
+                    current_total_individuals = data.total_individuals;
+                }
+
+                progress = (current_total_individuals / data.total_individuals) * 100;
+                if (progress > 100) progress = 100;
+                if (isNaN(progress)) progress = 0;
+
+                label = `Gen ${data.generation}/${total_gens} | Ind ${data.individual}/${pop_size}`;
+
+                if (data.estimated_remaining_seconds > 0) {
+                    let m = Math.floor(data.estimated_remaining_seconds / 60);
+                    let s = Math.floor(data.estimated_remaining_seconds % 60);
+                    timeLabel = `Time Remaining: ${m}m ${s}s`;
+                } else if (progress >= 100) {
+                    timeLabel = "Completed";
+                    label = `Gen ${total_gens}/${total_gens} | Done`;
+                } else {
+                    timeLabel = "Calculating...";
+                }
+            } else if (data.generation === 0 && data.total_individuals === 0 && data.results && data.results.length > 0) {
+                progress = 100;
+                label = "Completed";
+                timeLabel = "Completed";
+            }
+
+            document.getElementById("progressBar").style.width = progress + "%";
+            document.getElementById("genIndProgress").innerText = label;
+            document.getElementById("timeRemaining").innerText = timeLabel;
+
+        }
+
+        function updateArchitecture(data) {
+
+            let last = data[data.length - 1];
+
+            document.getElementById("architectureBox").innerText =
+                JSON.stringify(last.genome, null, 2);
+
+        }
+
+    </script>
+
+
+    <script>
+        (function () {
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+        })();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggle = document.getElementById('theme-toggle');
+            const iconSun = document.getElementById('theme-icon-sun');
+            const iconMoon = document.getElementById('theme-icon-moon');
+            const root = document.documentElement;
+
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            root.setAttribute('data-theme', currentTheme);
+            updateIcon(currentTheme);
+
+            if (themeToggle) {
+                themeToggle.addEventListener('click', () => {
+                    let theme = root.getAttribute('data-theme');
+                    let newTheme = theme === 'light' ? 'dark' : 'light';
+                    root.setAttribute('data-theme', newTheme);
+                    localStorage.setItem('theme', newTheme);
+                    updateIcon(newTheme);
+                });
+            }
+
+            function updateIcon(theme) {
+                if (iconSun && iconMoon) {
+                    if (theme === 'dark') {
+                        iconSun.style.display = 'block';
+                        iconMoon.style.display = 'none';
+                    } else {
+                        iconSun.style.display = 'none';
+                        iconMoon.style.display = 'block';
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

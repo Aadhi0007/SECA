@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SECA vs LLaMA Comparison</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-trail" id="cursorTrail"></div>
+
+    <header>
+        <a href="/compare" class="back-btn">&larr; Back to Hub</a>
+        <h1>SECA vs LLaMA Architecture</h1>
+    
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
+            <svg id="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <svg id="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+</header>
+
+    <div class="container">
+        <div class="card compare-card">
+            <h2>Overview</h2>
+            <p>
+                Meta's LLaMA focuses on creating efficient, open-weights foundation models through extreme data scaling
+                (trillions of tokens).
+                <strong>SECA</strong> takes a completely different route: it focuses on finding the structural minimum
+                required to solve specific cognitive pathways, eschewing foundation pre-training entirely.
+            </p>
+        </div>
+
+        <div class="card compare-card">
+            <h2>Key Differences</h2>
+            <table>
+                <tr>
+                    <th>Feature</th>
+                    <th>LLaMA Models</th>
+                    <th>SECA Engine</th>
+                </tr>
+                <tr>
+                    <td>Knowledge Source</td>
+                    <td>Vast internet text (Pre-training)</td>
+                    <td class="highlight">Evolutionary Search (Task-specific adaptation)</td>
+                </tr>
+                <tr>
+                    <td>Openness</td>
+                    <td>Open-weights (Model fixed after training)</td>
+                    <td class="highlight">Open-architecture (Self-modifying)</td>
+                </tr>
+                <tr>
+                    <td>Hardware Req</td>
+                    <td>Multi-GPU setups for fine-tuning</td>
+                    <td class="highlight">Can evolve on consumer hardware</td>
+                </tr>
+                <tr>
+                    <td>Domain Focus</td>
+                    <td>General-purpose language</td>
+                    <td class="highlight">Highly specific custom topologies</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="card compare-card">
+            <h2>Inference Speed vs Accuracy (Conceptual)</h2>
+            <canvas id="llamaChart" height="100"></canvas>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <button onclick="location.href='/?auto_run=true&model_type=llama'" id="generateBtn">Generate LLaMA
+                Alternative with SECA</button>
+        </div>
+    </div>
+
+    <script>
+        const cursorDot = document.getElementById("cursorDot");
+        const cursorTrail = document.getElementById("cursorTrail");
+        window.addEventListener("mousemove", (e) => {
+            cursorDot.style.left = e.clientX + "px"; cursorDot.style.top = e.clientY + "px";
+        });
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('mouseenter', () => { cursorTrail.style.width = '50px'; cursorTrail.style.height = '50px'; });
+            el.addEventListener('mouseleave', () => { cursorTrail.style.width = '32px'; cursorTrail.style.height = '32px'; });
+        });
+
+        Chart.defaults.color = '#c5c6c7';
+        Chart.defaults.borderColor = 'rgba(255, 193, 7, 0.55)';
+
+        new Chart(document.getElementById("llamaChart"), {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'LLaMA (7B, 13B, 70B)',
+                    data: [
+                        { x: 15, y: 78 }, { x: 35, y: 84 }, { x: 120, y: 88 }
+                    ],
+                    backgroundColor: 'rgba(69, 162, 158, 0.8)',
+                    pointRadius: 8
+                }, {
+                    label: 'SECA (Evolved)',
+                    data: [
+                        { x: 2, y: 75 }, { x: 4, y: 80 }, { x: 6, y: 83 }
+                    ],
+                    backgroundColor: 'rgba(255, 193, 7, 0.8)',
+                    pointRadius: 8,
+                    pointStyle: 'triangle'
+                }]
+            },
+            options: {
+                scales: {
+                    x: { title: { display: true, text: 'Inference Latency (ms)' } },
+                    y: { title: { display: true, text: 'Task Accuracy (%)' } }
+                }
+            }
+        });
+    </script>
+
+<script>
+    (function() {
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+    })();
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const themeToggle = document.getElementById('theme-toggle');
+        const iconSun = document.getElementById('theme-icon-sun');
+        const iconMoon = document.getElementById('theme-icon-moon');
+        const root = document.documentElement;
+
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        root.setAttribute('data-theme', currentTheme);
+        updateIcon(currentTheme);
+
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                let theme = root.getAttribute('data-theme');
+                let newTheme = theme === 'light' ? 'dark' : 'light';
+                root.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateIcon(newTheme);
+            });
+        }
+
+        function updateIcon(theme) {
+            if (iconSun && iconMoon) {
+                if (theme === 'dark') {
+                    iconSun.style.display = 'block';
+                    iconMoon.style.display = 'none';
+                } else {
+                    iconSun.style.display = 'none';
+                    iconMoon.style.display = 'block';
+                }
+            }
+        }
+    });
+</script>
+</body>
+
+</html>

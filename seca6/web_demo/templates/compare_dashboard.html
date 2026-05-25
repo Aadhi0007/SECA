@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SECA Models Comparison Hub</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-trail" id="cursorTrail"></div>
+
+    <header>
+        <a href="/" class="back-btn">&larr; Dashboard</a>
+        <h1>Model Comparisons</h1>
+        <p>SECA Architecture vs Existing LLMs</p>
+    
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
+            <svg id="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <svg id="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+</header>
+
+    <div class="container">
+
+        <div style="text-align: center; margin-bottom: 40px;">
+            <p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto;">
+                Explore how the Self-Evolving Cognitive Architecture (SECA) contrasts with industry-standard static
+                architectures in terms of efficiency, adaptability, and parameter utilization.
+            </p>
+        </div>
+
+        <div class="grid">
+
+            <a href="/compare/gpt" class="card-link">
+                <div class="card dashboard-card">
+                    <h2>SECA vs GPT</h2>
+                    <p>
+                        Compare SECA's dynamic neuroevolution with GPT's large-scale static transformer scaling.
+                        Evaluate parameter efficiency vs brute-force scaling.
+                    </p>
+                    <div class="btn-fake">View Comparison</div>
+                </div>
+            </a>
+
+            <a href="/compare/llama" class="card-link">
+                <div class="card dashboard-card">
+                    <h2>SECA vs LLaMA</h2>
+                    <p>
+                        Contrast LLaMA's optimized open-weights approach against SECA's structure-learning paradigm
+                        for resource-constrained environments.
+                    </p>
+                    <div class="btn-fake">View Comparison</div>
+                </div>
+            </a>
+
+            <a href="/compare/bert" class="card-link">
+                <div class="card dashboard-card">
+                    <h2>SECA vs BERT</h2>
+                    <p>
+                        Analyze SECA's architectural adaptation against BERT's traditional pre-training and
+                        task-specific
+                        fine-tuning methodologies.
+                    </p>
+                    <div class="btn-fake">View Comparison</div>
+                </div>
+            </a>
+
+        </div>
+
+    </div>
+
+    <footer>
+        <p>SECA Research Prototype</p>
+    </footer>
+
+    <script>
+        const cursorDot = document.getElementById("cursorDot");
+        const cursorTrail = document.getElementById("cursorTrail");
+
+        let mouseX = 0, mouseY = 0;
+        let trailX = 0, trailY = 0;
+
+        window.addEventListener("mousemove", (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursorDot.style.left = mouseX + "px";
+            cursorDot.style.top = mouseY + "px";
+        });
+
+        function animateCursor() {
+            let distX = mouseX - trailX;
+            let distY = mouseY - trailY;
+            trailX += (distX * 0.2);
+            trailY += (distY * 0.2);
+            cursorTrail.style.left = trailX + "px";
+            cursorTrail.style.top = trailY + "px";
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        const interactables = document.querySelectorAll('a, .card-link');
+        interactables.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursorTrail.style.width = '50px';
+                cursorTrail.style.height = '50px';
+                cursorTrail.style.borderColor = 'rgba(255, 193, 7, 0.8)';
+                cursorTrail.style.background = 'rgba(255, 193, 7, 0.55)';
+                cursorDot.style.transform = 'translate(-50%, -50%) scale(1.5)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursorTrail.style.width = '32px';
+                cursorTrail.style.height = '32px';
+                cursorTrail.style.borderColor = 'rgba(255, 193, 7, 0.7)';
+                cursorTrail.style.background = 'transparent';
+                cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
+            });
+        });
+    </script>
+
+<script>
+    (function() {
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+    })();
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const themeToggle = document.getElementById('theme-toggle');
+        const iconSun = document.getElementById('theme-icon-sun');
+        const iconMoon = document.getElementById('theme-icon-moon');
+        const root = document.documentElement;
+
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        root.setAttribute('data-theme', currentTheme);
+        updateIcon(currentTheme);
+
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                let theme = root.getAttribute('data-theme');
+                let newTheme = theme === 'light' ? 'dark' : 'light';
+                root.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateIcon(newTheme);
+            });
+        }
+
+        function updateIcon(theme) {
+            if (iconSun && iconMoon) {
+                if (theme === 'dark') {
+                    iconSun.style.display = 'block';
+                    iconMoon.style.display = 'none';
+                } else {
+                    iconSun.style.display = 'none';
+                    iconMoon.style.display = 'block';
+                }
+            }
+        }
+    });
+</script>
+</body>
+
+</html>

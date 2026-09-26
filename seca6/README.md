@@ -1,272 +1,100 @@
-SECA – Self-Evolving Cognitive Architecture
+# SECA – Self-Evolving Cognitive Architecture
 
-SECA (Self-Evolving Cognitive Architecture) is a research-oriented framework designed to explore self-evolving neural network architectures regulated by explicit self-evaluation mechanisms. The system combines evolutionary neural architecture search, gradient-based learning, and cognitive-inspired regulation to create adaptive neural models that can improve across generations without manual architecture design.
+**SECA (Self-Evolving Cognitive Architecture)** is a research-oriented framework for exploring self-evolving neural network architectures regulated by explicit self-evaluation mechanisms.
 
-The goal of SECA is not to claim general intelligence or consciousness but to demonstrate the feasibility of self-regulated architecture evolution within a unified framework.
+The framework combines:
 
-Project Overview
+- Evolutionary Neural Architecture Search
+- Gradient-based learning
+- Performance evaluation
+- Cognitive-inspired self-evaluation
+- Evolutionary regulation
 
-Modern deep learning systems typically rely on manually designed neural architectures, while automated approaches such as Neural Architecture Search (NAS) or neuroevolution focus primarily on optimizing architectures using performance metrics.
+The goal of SECA is to explore the feasibility of self-regulated neural architecture evolution within a unified framework. It does not claim general intelligence or consciousness.
 
-SECA extends this idea by introducing a cognitive-inspired regulatory layer that evaluates model behavior and regulates evolutionary processes.
+---
+
+## 🔬 Project Overview
+
+Modern deep learning systems often rely on manually designed neural architectures. Automated approaches such as Neural Architecture Search (NAS) and neuroevolution can automate architecture optimization, but the evolutionary process is generally driven by predefined performance objectives.
+
+SECA explores an additional cognitive-inspired regulatory layer that evaluates model behavior and regulates the evolutionary process.
+
+The framework follows the principle:
+
+> **Architecture Evolution → Learning → Evaluation → Self-Evaluation → Regulation → Next Generation**
 
 In SECA:
 
-Neural architectures evolve across generations
+1. Neural architectures are represented as genomes.
+2. A population of candidate architectures is initialized.
+3. Each architecture is trained using gradient-based learning.
+4. Model performance and efficiency are evaluated.
+5. A self-evaluation layer analyzes model behavior.
+6. Evolutionary operators generate the next generation.
+7. The process is repeated across multiple generations.
 
-Each architecture is trained using gradient descent
+---
 
-Performance and behavior are evaluated using multiple metrics
+## 🧠 Key Features
 
-A self-evaluation layer regulates the evolutionary process
+### Self-Evolving Neural Architectures
 
-This allows the system to move beyond blind architecture search toward self-regulated adaptive optimization.
+Neural network architectures are represented as genomes and evolved using evolutionary operations such as:
 
-Key Features
-Self-Evolving Neural Architectures
+- Mutation
+- Crossover
+- Selection
+- Population management
 
-Neural network structures are encoded as genomes and evolve using evolutionary operators such as mutation and selection.
+### Gradient-Based Learning
 
-Gradient-Based Learning
+Each evolved architecture can be trained using standard deep learning optimization techniques such as the **Adam optimizer**.
 
-Each evolved architecture is trained using standard deep learning optimizers such as Adam.
+### Cognitive-Inspired Self-Evaluation
 
-Cognitive-Inspired Self-Evaluation
+SECA includes a regulatory layer for:
 
-SECA includes a regulatory layer that performs:
+- Performance introspection
+- Confidence estimation
+- Evolutionary regulation
 
-performance introspection
+The regulatory layer does not directly modify model weights. Instead, it influences the architectural evolution process.
 
-confidence estimation
+### Modular Research Framework
 
-evolutionary regulation
+The framework separates major components into:
 
-This layer does not modify weights directly, but instead controls when and how architectural evolution occurs.
+- Evolution
+- Learning
+- Evaluation
+- Cognitive Regulation
 
-Modular Research Framework
+This modular design makes the system easier to experiment with and extend.
 
-The architecture is divided into clearly separated modules:
+---
 
-Evolution
+## ⚙️ System Workflow
 
-Learning
-
-Evaluation
-
-Cognitive Regulation
-
-This modular design allows the framework to be easily extended for future research.
-
-Project Structure
-SECA/
-│
-├── config/
-│   ├── seca_config.yaml
-│   ├── evolution_config.yaml
-│   └── dataset_config.yaml
-│
-├── data/
-│   └── dataset_loader.py
-│
-├── seca_core/
-│
-│   ├── evolution/
-│   │   ├── genome.py
-│   │   ├── mutation.py
-│   │   ├── crossover.py
-│   │   ├── selection.py
-│   │   └── population.py
-│
-│   ├── learning/
-│   │   ├── model_builder.py
-│   │   ├── trainer.py
-│   │   └── optimizer.py
-│
-│   ├── cognition/
-│   │   ├── introspection.py
-│   │   ├── confidence_estimator.py
-│   │   └── regulation.py
-│
-│   ├── evaluation/
-│   │   ├── fitness.py
-│   │   ├── metrics.py
-│   │   └── validation.py
-│
-│   └── seca_engine.py
-│
-├── experiments/
-│   ├── run_evolution.py
-│   └── results_logger.py
-│
-├── models/
-│
-├── logs/
-│
-├── visualization/
-│
-├── web_demo/
-│   ├── app.py
-│   ├── templates/
-│   └── static/
-│
-├── main.py
-├── requirements.txt
-└── README.md
-System Workflow
-
-The SECA pipeline follows a multi-stage process:
-
-Initialize a population of neural architectures.
-
-Encode each architecture as a genome.
-
-Train architectures using gradient-based learning.
-
-Evaluate performance and model efficiency.
-
-Perform self-evaluation through the cognitive layer.
-
-Apply evolutionary operations to produce the next generation.
-
-Repeat the process for multiple generations.
-
+```text
 Dataset
    ↓
 Population Initialization
    ↓
-Training
+Architecture Encoding
+   ↓
+Model Training
    ↓
 Performance Evaluation
    ↓
 Cognitive Self-Evaluation
    ↓
-Evolution
+Evolutionary Selection
+   ↓
+Mutation / Crossover
    ↓
 Next Generation
-Installation
-Clone the repository
-git clone https://github.com/yourusername/seca.git
-cd seca
-Install dependencies
-pip install -r requirements.txt
-Running SECA
+   ↓
+Repeat
 
-To run the SECA evolution process:
 
-python main.py
-
-or
-
-python experiments/run_evolution.py
-
-This will:
-
-initialize the population
-
-train neural architectures
-
-evolve networks across generations
-
-log performance metrics
-
-Example Output
-
-During execution, the system prints results such as:
-
-=== Generation 0 ===
-Ind 0: acc=0.88, params=35130
-Ind 1: acc=0.89, params=108474
-
-Best this generation:
-accuracy = 0.89
-parameters = 35130
-
-The system logs:
-
-generation performance
-
-architecture configurations
-
-evolution history
-
-Experimental Setup
-
-The current implementation is designed as a proof-of-concept framework.
-
-Typical experimental setup:
-
-Dataset: MNIST or small image classification datasets
-
-Population size: 5–10 architectures
-
-Generations: 5–10
-
-Optimizer: Adam
-
-Fitness metrics:
-
-accuracy
-
-model complexity
-
-stability
-
-Limitations
-
-The current implementation has several limitations:
-
-experiments are performed on small datasets
-
-evolutionary search is computationally expensive
-
-the cognitive layer is rule-based rather than learned
-
-These limitations are expected in an early research prototype.
-
-Future Work
-
-Future work will extend SECA toward the full architecture proposed in the research paper.
-
-Planned improvements include:
-
-learned cognitive regulation using reinforcement learning
-
-probabilistic self-modeling
-
-surrogate-assisted architecture search
-
-scaling to larger datasets
-
-multi-task adaptive learning
-
-These extensions will gradually bridge the gap between the current prototype implementation and the conceptual SECA framework proposed in the paper.
-
-Research Context
-
-SECA is inspired by research in:
-
-Neural Architecture Search (NAS)
-
-Neuroevolution
-
-Meta-learning
-
-Cognitive architectures
-
-Adaptive AI systems
-
-However, the focus of this project is framework integration and feasibility, not theoretical novelty.
-
-Author
-
-Adhithyan A
-
-Department of Computer Science and Engineering
-College of Engineering, Kottarakkara
-
-Project: Self-Evolving Cognitive Architecture (SECA)
-
-License
-
-This project is intended for academic and research purposes.
-# seca
